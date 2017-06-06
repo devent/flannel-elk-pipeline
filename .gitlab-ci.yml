@@ -11,9 +11,8 @@ before_script:
 build:
   stage: build
   script:
-    - cd kubernetes/fluentd
-    - merge.sh ams01 out
-    - parse.sh out parsed ams01/fluentd-es-ams01.conf
+    - cd kubernetes/fluentd && merge.sh ams01 out
+    - cd kubernetes/fluentd && parse.sh out parsed ams01/fluentd-es-ams01.conf
 
 test:
   stage: test

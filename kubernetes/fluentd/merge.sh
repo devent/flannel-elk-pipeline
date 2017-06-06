@@ -9,7 +9,7 @@ function print_help() {
 }
 
 function run_yamlreader() {
-  docker run -it --rm \
+  docker run --rm \
     -v "$WORK_DIR:/work" \
     $REPOSITORY/$NAME:$VERSION \
     yamlreader "$@"

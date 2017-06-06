@@ -11,7 +11,7 @@ function run_template() {
   template=$1; shift
   template_name="`basename $template`"
   
-  docker run -i --rm \
+  docker run --rm \
     -v `realpath $IN`:/data \
     -e TEMPLATE=$template_name \
     -e "PGID=$(id -g)" -e "PUID=$(id -u)" \

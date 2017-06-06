@@ -1,12 +1,9 @@
-image: centos:7
+image: docker:17.06-rc
 
 stages:
   - build
   - deploy
   - test
-
-before_script:
-  - yum -y install git
 
 build:
   stage: build

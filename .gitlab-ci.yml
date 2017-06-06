@@ -1,18 +1,20 @@
-image: fedora:25
+image: docker:latest
+
+variables:
+  DOCKER_DRIVER: overlay
+
+services:
+- docker:dind
+
+before_script:
+- docker info
+
+build:
 
 stages:
   - build
   - deploy
   - test
-
-before_script:
-  - dnf -y install dnf-plugins-core
-  - dnf -y config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
-  - dnf -y config-manager --set-enabled docker-ce-edge
-  - dnf -y config-manager --set-disabled docker-ce-edge
-  - dnf -y makecache fast
-  - dnf -y install docker-ce
-  - /usr/bin/dockerd
 
 build:
   stage: build

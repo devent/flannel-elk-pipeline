@@ -12,6 +12,7 @@ before_script:
   - dnf -y config-manager --set-disabled docker-ce-edge
   - dnf -y makecache fast
   - dnf -y install docker-ce
+  - systemctl start docker
 
 build:
   stage: build

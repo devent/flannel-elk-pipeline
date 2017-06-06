@@ -1,0 +1,74 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: fluentd
+  namespace: kube-system
+  labels:
+    k8s-app: fluentd-logging
+    version: v1
+    kubernetes.io/cluster-service: "true"
+spec:
+  template:
+    metadata:
+      labels:
+        k8s-app: fluentd-logging
+        version: v1
+        kubernetes.io/cluster-service: "true"
+    spec:
+      containers:
+      - name: fluentd
+        image: dockerhub.moovel.own:443/c2/fluentd:v0.37
+        env:
+          - name:  FLUENT_ELASTICSEARCH_HOST
+            value: "elasticsearch-cluster"
+          - name:  FLUENT_ELASTICSEARCH_PORT
+            value: "9231"
+          - name:  ES_TEMPLATES_DIR
+            value: "/etc/td-agent/es-templates"
+        resources:
+          limits:
+            memory: 600Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        volumeMounts:
+        - name: journallog
+          mountPath: /var/log/journal
+        - name: containerslog
+          mountPath: /var/log/containers
+          readOnly: true
+        - name: podlog
+          mountPath: /var/log/pods
+          readOnly: true
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+        - name: config-volume
+          mountPath: /etc/td-agent/conf.d/
+        - name: grok-volume
+          mountPath: /etc/td-agent/grok/
+        - name: templates-volume
+          mountPath: /etc/td-agent/es-templates/
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: journallog
+        hostPath:
+          path: /var/log/journal
+      - name: containerslog
+        hostPath:
+          path: /var/log/containers
+      - name: podlog
+        hostPath:
+          path: /var/log/pods
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers
+      - name: config-volume
+        configMap:
+          name: fluentd-config
+      - name: grok-volume
+        configMap:
+          name: fluentd-grok
+      - name: templates-volume
+        configMap:
+          name: fluentd-templates

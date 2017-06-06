@@ -1,0 +1,94 @@
+data:
+  kubernetes.conf: |-
+    <source>
+      @type tail
+      path /var/log/containers/*.log
+      pos_file /var/log/es-containers.log.pos
+      tag kubernetes.*
+      read_from_head true
+      format json
+      time_format %Y-%m-%dT%H:%M:%S.%NZ
+    </source>
+
+    <filter kubernetes.**>
+      @type parser
+      key_name log
+      reserve_data true
+      reserve_time true
+      <parse>
+        @type grok
+        custom_pattern_path /etc/td-agent/grok/kubernetes.txt
+        <grok>
+          pattern %{CALICO}
+        </grok>
+        <grok>
+          pattern %{KUBERNETES}
+        </grok>
+      </parse>
+    </filter>
+
+    <filter kubernetes.var.log.containers.**.log>
+      @type kubernetes_metadata
+    </filter>
+
+    <match kubernetes.**>
+      @type elasticsearch
+      @log_level info
+      include_tag_key true
+      host "#{ENV['FLUENT_ELASTICSEARCH_HOST']}"
+      port "#{ENV['FLUENT_ELASTICSEARCH_PORT']}"
+      logstash_prefix {{ pods_index_name }}
+      logstash_dateformat "_%Y.%m.%d"
+      logstash_format true
+      template_name "{{ pods_index_name }}-*"
+      template_file "/etc/td-agent/es-templates/kubernetes.json"
+      buffer_type file
+      buffer_path /var/log/fluentd.buffer
+      buffer_queue_full_action drop_oldest_chunk
+      buffer_chunk_limit 8m
+      buffer_queue_limit 64 
+      reload_connections false 
+      flush_interval 2s
+      max_retry_wait 30
+      disable_retry_limit
+      num_threads 2
+    </match>
+  systemd.conf: |-
+    <source>
+      @type systemd
+      path /var/log/journal
+      filters [{ "_SYSTEMD_UNIT": [ "etcd-member.service", "docker.service", "kubelet.service" ] }]
+      pos_file /var/log/fluentd-coreos.pos
+      tag coreos
+      read_from_head true
+      strip_underscores true
+    </source>
+
+    <filter coreos>
+      @type parser
+      key_name MESSAGE
+      reserve_data true
+      reserve_time true
+      <parse>
+        @type grok
+        custom_pattern_path /etc/td-agent/grok/systemd.txt
+        grok_pattern time="%{TIMESTAMP_ISO8601:message_time}"\s+level=%{LOGLEVEL:message_level}\s+msg="%{DATA:message_message}"
+      </parse>
+    </filter>
+
+    <match coreos>
+      @type elasticsearch
+      @log_level info
+      include_tag_key true
+      host "#{ENV['FLUENT_ELASTICSEARCH_HOST']}"
+      port "#{ENV['FLUENT_ELASTICSEARCH_PORT']}"
+      logstash_prefix {{ systemd_index_name }}
+      logstash_dateformat "_%Y.%m.%d"
+      logstash_format true
+      buffer_chunk_limit 4m
+      buffer_queue_limit 256
+      flush_interval 5s
+      max_retry_wait 30
+      disable_retry_limit
+      num_threads 8
+    </match>

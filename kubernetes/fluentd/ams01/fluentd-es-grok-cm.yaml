@@ -1,0 +1,19 @@
+data:
+  kubernetes.txt: |-
+    KUBERNETES %{KUBE_LEVEL}%{KUBE_TIME:log_time}\s+%{INT}\s+%{K_MODULE}:%{K_LINE}\]\s+%{K_MESSAGE}
+
+    CALICO %{CALICO_TIME:log_time}\s+%{CALICO_LEVEL}\s+%{K_MODULE}\s+%{K_LINE}:\s+%{K_MESSAGE}
+
+    KUBE_LEVEL %{LETTER:log_level}
+    KUBE_TIME %{MONTHNUM}%{MONTHDAY}\s%{TIME}
+
+    CALICO_LEVEL \[%{K_LEVEL_NAME}\]\[%{INT}\]
+    CALICO_TIME %{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{TIME}
+
+    K_LEVEL_NAME %{LOGLEVEL:log_level}
+    K_MODULE %{GREEDYDATA:log_module}
+    K_LINE %{INT:log_line}
+    K_MESSAGE %{GREEDYDATA:log_message}
+
+    LETTER \w
+  systemd.txt:

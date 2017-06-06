@@ -1,0 +1,8 @@
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: elasticsearch-cluster
+  namespace: kube-system
+subsets:
+  - ports:
+      - port: 9231

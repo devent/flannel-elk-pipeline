@@ -1,0 +1,9 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: elasticsearch-cluster
+  namespace: kube-system
+spec:
+  ports:
+  - port: 9231
+    protocol: TCP

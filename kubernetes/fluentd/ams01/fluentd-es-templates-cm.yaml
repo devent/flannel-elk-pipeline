@@ -1,0 +1,72 @@
+data:
+  kubernetes.json: |-
+    {
+      "template": "{{ pods_index_name }}-*",
+      "mappings": {
+        "fluentd": {
+          "properties": {
+            "@timestamp": {
+              "type": "date"
+            },
+            "docker": {
+              "properties": {
+                "container_id": {
+                  "type": "string",
+                  "index": "not_analyzed"
+                }
+              }
+            },
+            "kubernetes": {
+              "properties": {
+                "container_name": {
+                  "type": "string",
+                  "index": "not_analyzed"
+                },
+                "namespace_name": {
+                  "type": "string",
+                  "index": "not_analyzed"
+                },
+                "pod_name": {
+                  "type": "string",
+                  "index": "not_analyzed"
+                }
+              }
+            },
+            "log": {
+              "type": "string",
+              "index": "analyzed",
+              "ignore_above": 256
+            },
+            "log_level": {
+              "type": "string",
+              "index": "not_analyzed"
+            },
+            "log_line": {
+              "type": "long"
+            },
+            "log_message": {
+              "type": "string",
+              "index": "not_analyzed"
+            },
+            "log_module": {
+              "type": "string"
+            },
+            "log_time": {
+              "type": "date",
+              "format": "yyyy-MM-dd HH:mm:ss.SSS||MMdd HH:mm:ss.SSSSSS"
+            },
+            "message": {
+              "type": "string",
+              "index": "analyzed",
+              "ignore_above": 256
+            },
+            "stream": {
+              "type": "string"
+            },
+            "tag": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }

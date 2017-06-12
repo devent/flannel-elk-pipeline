@@ -9,7 +9,7 @@ build:
   stage: build
   script:
     - cd kubernetes/fluentd && bash -x merge.sh ams01 out
-    - cd kubernetes/fluentd && bash -x parse.sh out parsed ams01/fluentd-es-ams01.conf
+    - pwd && cd kubernetes/fluentd && bash -x parse.sh out parsed ams01/fluentd-es-ams01.conf
 
 test:
   stage: test

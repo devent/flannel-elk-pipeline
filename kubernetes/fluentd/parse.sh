@@ -14,7 +14,7 @@ function run_template() {
   
   export TEMPLATE="$template_name"
   export TEMPLATES_DIR="`dirname $template`"
-  /app/jinja2 render.py "${VARS[@]}"
+  /app/jinja2/render.py "${VARS[@]}"
 }
 
 if [ $# -ne 3 ]; then

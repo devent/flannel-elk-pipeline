@@ -2,18 +2,12 @@ image: erwinnttdata/merge-jinja2-yaml:latest
 
 stages:
   - build
-  - deploy
-  - test
 
 build:
   stage: build
   script:
     - cd kubernetes/fluentd
-    - pwd && bash -x merge.sh ams01 out
-    - pwd && bash -x parse.sh out parsed ams01/fluentd-es-ams01.conf
-
-test:
-  stage: test
-  script:
+    - bash -x merge.sh ams01 out
+    - bash -x parse.sh out parsed ams01/fluentd-es-ams01.conf
     - ls -l out
     - ls -l parsed

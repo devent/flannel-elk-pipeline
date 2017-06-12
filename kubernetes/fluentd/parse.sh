@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e
-set -x
 
 function print_help() {
     echo "Parses Yaml files with Jinja2."

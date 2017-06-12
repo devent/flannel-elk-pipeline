@@ -1,15 +1,4 @@
-image: docker:latest
-
-variables:
-  DOCKER_DRIVER: overlay
-
-services:
-- docker:dind
-
-before_script:
-- docker info
-
-build:
+image: erwinnttdata/merge-jinja2-yaml:latest
 
 stages:
   - build

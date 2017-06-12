@@ -9,10 +9,7 @@ function print_help() {
 }
 
 function run_yamlreader() {
-  docker run --rm \
-    -v "$WORK_DIR:/work" \
-    $REPOSITORY/$NAME:$VERSION \
-    yamlreader "$@"
+  yamlreader "$@"
 }
 
 ENV=$1; shift

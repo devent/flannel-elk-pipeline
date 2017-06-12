@@ -11,11 +11,9 @@ function run_template() {
   template=$1; shift
   template_name="`basename $template`"
   
-  docker run --rm \
-    -v `realpath $IN`:/data \
-    -e TEMPLATE=$template_name \
-    -e "PGID=$(id -g)" -e "PUID=$(id -u)" \
-    pinterb/jinja2:0.0.16 "${VARS[@]}"
+  export TEMPLATE="$template_name"
+  export TEMPLATES_DIR="`dirname $template`"
+  /app/jinja2 render.py "${VARS[@]}"
 }
 
 if [ $# -ne 3 ]; then
